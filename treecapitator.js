@@ -63,7 +63,6 @@ function destroyBlock(x, y, z, side) {
     var woodType = Level.getData(x, y, z) & 0b00000011;
 
     if (isWood(getTile(x, y, z))) {
-      logWood(woodType);
       findWoodForRemove(x, y, z, woodType);
     }
   }
