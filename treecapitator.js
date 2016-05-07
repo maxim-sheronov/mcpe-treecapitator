@@ -21,39 +21,41 @@ function isWood(blockId) {
   return (blockId == ID_WOOD || blockId == ID_ACACIA_WOOD);
 }
 
-function findWoodForRemove(x, y, z, woodType) {
+function findWoodForRemove(x, y, z, blockId, woodType) {
 
-  tryRemoveWoodAndFind(x + 1, y, z, woodType);
-  tryRemoveWoodAndFind(x - 1, y, z, woodType);
-  tryRemoveWoodAndFind(x, y, z + 1, woodType);
-  tryRemoveWoodAndFind(x, y, z - 1, woodType);
+  tryRemoveWoodAndFind(x + 1, y, z, blockId, woodType);
+  tryRemoveWoodAndFind(x - 1, y, z, blockId, woodType);
+  tryRemoveWoodAndFind(x, y, z + 1, blockId, woodType);
+  tryRemoveWoodAndFind(x, y, z - 1, blockId, woodType);
 
-  tryRemoveWoodAndFind(x + 1, y, z + 1, woodType);
-  tryRemoveWoodAndFind(x + 1, y, z - 1, woodType);
-  tryRemoveWoodAndFind(x - 1, y, z + 1, woodType);
-  tryRemoveWoodAndFind(x - 1, y, z - 1, woodType);
+  tryRemoveWoodAndFind(x + 1, y, z + 1, blockId, woodType);
+  tryRemoveWoodAndFind(x + 1, y, z - 1, blockId, woodType);
+  tryRemoveWoodAndFind(x - 1, y, z + 1, blockId, woodType);
+  tryRemoveWoodAndFind(x - 1, y, z - 1, blockId, woodType);
 
-  tryRemoveWoodAndFind(x, y + 1, z, woodType);
+  tryRemoveWoodAndFind(x, y + 1, z, blockId, woodType);
 
-  tryRemoveWoodAndFind(x + 1, y + 1, z, woodType);
-  tryRemoveWoodAndFind(x - 1, y + 1, z, woodType);
-  tryRemoveWoodAndFind(x, y + 1, z + 1, woodType);
-  tryRemoveWoodAndFind(x, y + 1, z - 1, woodType);
+  tryRemoveWoodAndFind(x + 1, y + 1, z, blockId, woodType);
+  tryRemoveWoodAndFind(x - 1, y + 1, z, blockId, woodType);
+  tryRemoveWoodAndFind(x, y + 1, z + 1, blockId, woodType);
+  tryRemoveWoodAndFind(x, y + 1, z - 1, blockId, woodType);
 
-  tryRemoveWoodAndFind(x + 1, y + 1, z + 1, woodType);
-  tryRemoveWoodAndFind(x + 1, y + 1, z - 1, woodType);
-  tryRemoveWoodAndFind(x - 1, y + 1, z + 1, woodType);
-  tryRemoveWoodAndFind(x - 1, y + 1, z - 1, woodType);
+  tryRemoveWoodAndFind(x + 1, y + 1, z + 1, blockId, woodType);
+  tryRemoveWoodAndFind(x + 1, y + 1, z - 1, blockId, woodType);
+  tryRemoveWoodAndFind(x - 1, y + 1, z + 1, blockId, woodType);
+  tryRemoveWoodAndFind(x - 1, y + 1, z - 1, blockId, woodType);
 }
 
-function tryRemoveWoodAndFind(x, y, z, woodType) {
+function tryRemoveWoodAndFind(x, y, z, blockId, woodType) {
   var tileId = getTile(x, y, z);
-  if (isWood(tileId) && (Level.getData(x, y, z) & 0b00000011) == woodType) {
-    Level.setTile(x, y, z, 0);
-    Level.dropItem(x, y, z, 0, ID_WOOD, 1, woodType);
+  if (blockId == tileId && (Level.getData(x, y, z) & 0b00000011) == woodType) {
+    Level.destroyBlock(x, y, z, true);
+    
+    // Level.setTile(x, y, z, 0);
+    // Level.dropItem(x, y, z, 0, blockId, 1, woodType);
     Entity.setCarriedItem(getPlayerEnt(), Player.getCarriedItem(), Player.getCarriedItemCount(), Player.getCarriedItemData() + 1);
 
-    findWoodForRemove(x, y, z, woodType);
+    findWoodForRemove(x, y, z, blockId, woodType);
   }
 }
 
@@ -61,9 +63,10 @@ function destroyBlock(x, y, z, side) {
   if (isAxe(Player.getCarriedItem())) {
 
     var woodType = Level.getData(x, y, z) & 0b00000011;
+    var blockId = getTile(x, y, z); 
 
-    if (isWood(getTile(x, y, z))) {
-      findWoodForRemove(x, y, z, woodType);
+    if (isWood(blockId)) {
+      findWoodForRemove(x, y, z, blockId, woodType);
     }
   }
 }
